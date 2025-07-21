@@ -10,7 +10,10 @@ export async function POST(request: NextRequest) {
 
     // ✅ Basic validation
     if (!Array.isArray(data.items) || data.items.length === 0) {
-      return NextResponse.json({ error: 'No order items provided' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'No order items provided' },
+        { status: 400 }
+      );
     }
 
     // ✅ Generate order number
