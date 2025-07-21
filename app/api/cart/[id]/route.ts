@@ -3,14 +3,17 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
+// Define a type for the context param for clarity
+interface Params {
+  params: {
+    id: string;
+  };
+}
+
 // PUT - Update cart item quantity
-export async function PUT(
-  request: NextRequest,
-  context: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest, context: Params) {
   try {
     const session = await getServerSession(authOptions);
-
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -26,17 +29,18 @@ export async function PUT(
         },
       });
       return NextResponse.json({ message: 'Item removed from cart' });
-    } else {
-      const updatedItem = await prisma.cartItem.update({
-        where: {
-          id,
-          userId: session.user.id,
-        },
-        data: { quantity },
-        include: { product: true },
-      });
-      return NextResponse.json(updatedItem);
     }
+
+    const updatedItem = await prisma.cartItem.update({
+      where: {
+        id,
+        userId: session.user.id,
+      },
+      data: { quantity },
+      include: { product: true },
+    });
+
+    return NextResponse.json(updatedItem);
   } catch (error) {
     console.error('Failed to update cart item:', error);
     return NextResponse.json(
@@ -47,13 +51,9 @@ export async function PUT(
 }
 
 // DELETE - Remove specific item from cart
-export async function DELETE(
-  request: NextRequest,
-  context: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, context: Params) {
   try {
     const session = await getServerSession(authOptions);
-
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
