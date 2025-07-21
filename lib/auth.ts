@@ -65,13 +65,16 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
   },
   callbacks: {
-    async jwt({ token, user }: { token: MyToken; user?: any }) {
+    async jwt({ token, user }) {
       if (user) {
         token.role = user.role;
         token.sub = user.id;
+        console.log('JWT user:', user);
       }
+      console.log('JWT token:', token);
       return token;
     },
+
     async session({
       session,
       token,
@@ -80,8 +83,8 @@ export const authOptions: NextAuthOptions = {
       token: MyToken;
     }) {
       if (token) {
-        session.user.id = token.sub!;
-        session.user.role = token.role ?? 'CUSTOMER';
+        session.user.id = token.sub!; // <-- token.sub should be string
+        session.user.role = token.role ?? 'CUSTOMER'; // <-- token.role should be string
       }
       return session;
     },
