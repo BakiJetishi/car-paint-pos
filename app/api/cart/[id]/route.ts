@@ -12,7 +12,7 @@ export async function PUT(request: NextRequest, context: any) {
     }
 
     const { quantity } = await request.json();
-    const { params } = context;
+    const params = (context as { params: { id: string } }).params;
     const id = params.id;
 
     if (quantity <= 0) {
