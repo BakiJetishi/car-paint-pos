@@ -60,6 +60,7 @@ model Order {
   customerCity String?
   customerState String?
   customerZip String?
+  notes  String?
   subtotal    Float
   taxRate     Float       @default(0.08) // 8% tax
   taxAmount   Float
