@@ -5,41 +5,30 @@ import { prisma } from '@/lib/prisma';
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: any // <-- loose typing to fix TS error
 ) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (
-      !session ||
-      (session.user.role !== 'ADMIN' && session.user.role !== 'MANAGER')
-    ) {
+    if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const data = await request.json();
+    const id = context.params.id; // access route param here
 
-    const product = await prisma.product.update({
-      where: { id: params.id },
+    const message = await prisma.contactMessage.update({
+      where: { id },
       data: {
-        name: data.name,
-        color: data.color,
-        brand: data.brand,
-        size: data.size,
-        price: parseFloat(data.price),
-        stockQty: parseInt(data.stockQty),
-        minStock: parseInt(data.minStock || 5),
-        category: data.category,
-        description: data.description,
-        imageUrl: data.imageUrl,
-        usageInstructions: data.usageInstructions,
+        status: data.status,
       },
     });
 
-    return NextResponse.json(product);
+    return NextResponse.json(message);
   } catch (error) {
+    console.error('Failed to update message status:', error);
     return NextResponse.json(
-      { error: 'Failed to update product' },
+      { error: 'Failed to update message' },
       { status: 500 }
     );
   }
@@ -47,7 +36,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: any // <-- loose typing here as well
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -56,15 +45,17 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    await prisma.product.update({
-      where: { id: params.id },
-      data: { isActive: false },
+    const id = context.params.id;
+
+    await prisma.contactMessage.delete({
+      where: { id },
     });
 
-    return NextResponse.json({ message: 'Product deleted successfully' });
+    return NextResponse.json({ message: 'Message deleted successfully' });
   } catch (error) {
+    console.error('Failed to delete message:', error);
     return NextResponse.json(
-      { error: 'Failed to delete product' },
+      { error: 'Failed to delete message' },
       { status: 500 }
     );
   }
