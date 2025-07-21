@@ -6,9 +6,13 @@ import { prisma } from '@/lib/prisma';
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const data = await request.json();
 
-    // ✅ Basic validation
     if (!Array.isArray(data.items) || data.items.length === 0) {
       return NextResponse.json(
         { error: 'No order items provided' },
@@ -16,13 +20,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // ✅ Generate order number
     const orderCount = await prisma.order.count();
     const orderNumber = `ORD-${Date.now()}-${(orderCount + 1)
       .toString()
       .padStart(4, '0')}`;
 
-    // ✅ Calculate totals safely
     const subtotal = data.items.reduce(
       (sum: number, item: any) => sum + item.price * item.quantity,
       0
@@ -31,7 +33,6 @@ export async function POST(request: NextRequest) {
     const taxAmount = subtotal * taxRate;
     const total = subtotal + taxAmount;
 
-    // ✅ Create order
     const order = await prisma.order.create({
       data: {
         orderNumber,
@@ -49,7 +50,7 @@ export async function POST(request: NextRequest) {
         total,
         paymentMethod: data.paymentMethod ?? 'CARGO',
         notes: data.notes ?? undefined,
-        userId: session?.user?.id ?? undefined,
+        userId: session.user.id, // guaranteed string here
         orderItems: {
           create: data.items.map((item: any) => ({
             productId: item.productId,
@@ -69,7 +70,6 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // ✅ Update product stock
     for (const item of data.items) {
       await prisma.product.update({
         where: { id: item.productId },
@@ -86,50 +86,6 @@ export async function POST(request: NextRequest) {
     console.error('Order creation error:', error);
     return NextResponse.json(
       { error: 'Failed to create order' },
-      { status: 500 }
-    );
-  }
-}
-
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const since = searchParams.get('since');
-    const limit = searchParams.get('limit');
-
-    const session = await getServerSession(authOptions);
-
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const whereClause: any = {};
-
-    if (since) {
-      whereClause.createdAt = {
-        gt: new Date(since),
-      };
-    }
-
-    const orders = await prisma.order.findMany({
-      where: whereClause,
-      include: {
-        orderItems: {
-          include: {
-            product: true,
-          },
-        },
-        user: true,
-      },
-      orderBy: { createdAt: 'desc' },
-      take: limit ? parseInt(limit) : 50,
-    });
-
-    return NextResponse.json(orders);
-  } catch (error) {
-    console.error('Order fetch error:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch orders' },
       { status: 500 }
     );
   }
