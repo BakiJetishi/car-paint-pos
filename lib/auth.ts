@@ -1,7 +1,24 @@
-import { NextAuthOptions } from 'next-auth';
+import {
+  NextAuthOptions,
+  User as NextAuthUser,
+  Session,
+  TokenSet,
+} from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import { prisma } from './prisma';
+
+// Define your token type with role and sub
+interface MyToken extends TokenSet {
+  sub?: string;
+  role?: string;
+}
+
+// Extend session user type to include id and role
+interface MySessionUser extends NextAuthUser {
+  id: string;
+  role: string;
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -48,16 +65,23 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: MyToken; user?: any }) {
       if (user) {
         token.role = user.role;
+        token.sub = user.id;
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({
+      session,
+      token,
+    }: {
+      session: Session & { user: MySessionUser };
+      token: MyToken;
+    }) {
       if (token) {
-        session.user.id = token.sub!; // <== add non-null assertion here
-        session.user.role = token.role;
+        session.user.id = token.sub!;
+        session.user.role = token.role ?? 'CUSTOMER';
       }
       return session;
     },
