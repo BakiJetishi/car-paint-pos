@@ -3,15 +3,8 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
-// Define a type for the context param for clarity
-interface Params {
-  params: {
-    id: string;
-  };
-}
-
 // PUT - Update cart item quantity
-export async function PUT(request: NextRequest, context: Params) {
+export async function PUT(request: NextRequest, context: any) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
@@ -19,7 +12,8 @@ export async function PUT(request: NextRequest, context: Params) {
     }
 
     const { quantity } = await request.json();
-    const id = context.params.id;
+    const { params } = context;
+    const id = params.id;
 
     if (quantity <= 0) {
       await prisma.cartItem.delete({
@@ -51,14 +45,15 @@ export async function PUT(request: NextRequest, context: Params) {
 }
 
 // DELETE - Remove specific item from cart
-export async function DELETE(request: NextRequest, context: Params) {
+export async function DELETE(request: NextRequest, context: any) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const id = context.params.id;
+    const { params } = context;
+    const id = params.id;
 
     await prisma.cartItem.delete({
       where: {
