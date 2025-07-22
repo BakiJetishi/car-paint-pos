@@ -21,6 +21,7 @@ model User {
   // Relations
   orders Order[]
   cartItems CartItem[]
+  notifications Notification[] 
 
   @@map("users")
 }
@@ -71,12 +72,14 @@ model Order {
   updatedAt   DateTime    @updatedAt
 
   // Relations
-  userId     String
-  user       User        @relation(fields: [userId], references: [id])
+  userId     String?          // <--- Make optional by adding "?"
+  user       User?            @relation(fields: [userId], references: [id]) // <--- Make optional
+
   orderItems OrderItem[]
 
   @@map("orders")
 }
+
 
 model OrderItem {
   id       String @id @default(cuid()) @map("_id")
@@ -146,4 +149,26 @@ model CartItem {
 
   @@unique([userId, productId])
   @@map("cart_items")
+}
+
+model Notification {
+  id        String    @id @default(cuid()) @map("_id")
+  type      NotificationType
+  title     String
+  message   String
+  isRead    Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  // Optionally relate to user if notifications are user-specific
+  userId    String?   
+  user      User?     @relation(fields: [userId], references: [id])
+
+  @@map("notifications")
+}
+
+enum NotificationType {
+  order
+  message
+  other
 }

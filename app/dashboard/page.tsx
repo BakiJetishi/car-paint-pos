@@ -32,6 +32,7 @@ import { useToast } from '@/hooks/use-toast';
 import { printReceipt } from '@/lib/utils/receipt-generator';
 import Link from 'next/link';
 import Image from 'next/image';
+import { NotificationBell } from '@/components/admin/NotificationBell';
 
 interface Product {
   id: string;
@@ -228,7 +229,6 @@ export default function DashboardPage() {
         setCustomerPhone('');
         setCustomerDescription('');
 
-
         // Refresh products to update stock
         fetchProducts();
 
@@ -291,6 +291,7 @@ export default function DashboardPage() {
                 Messages
               </Button>
             </Link>
+            <NotificationBell />
             {(session?.user?.role === 'ADMIN' ||
               session?.user?.role === 'MANAGER') && (
               <Link href='/products'>
@@ -450,7 +451,9 @@ export default function DashboardPage() {
 
               {/* New description field */}
               <div>
-                <Label htmlFor='customerDescription'>Description (Optional)</Label>
+                <Label htmlFor='customerDescription'>
+                  Description (Optional)
+                </Label>
                 <Input
                   id='customerDescription'
                   value={customerDescription}
@@ -460,7 +463,6 @@ export default function DashboardPage() {
               </div>
             </div>
           </div>
-
 
           {/* Cart Items */}
           <div className='flex-1 overflow-y-auto'>

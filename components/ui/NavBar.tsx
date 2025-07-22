@@ -133,31 +133,31 @@ export default function NavBar() {
             >
               Contact
             </Link>
-<div className='flex flex-col space-y-2 pt-2 md:hidden'>
-  {!isLoggedIn && (
-    <div className='flex space-x-2'>
-      <Link href='/customer-login' className='flex-1'>
-        <Button variant='outline' size='sm' className='w-full'>
-          <Users className='h-4 w-4 mr-2' />
-          Login
-        </Button>
-      </Link>
-      <CartButton />
-    </div>
-  )}
+            <div className='flex flex-col space-y-2 pt-2 md:hidden'>
+              {!isLoggedIn && (
+                <div className='flex space-x-2'>
+                  <Link href='/customer-login' className=''>
+                    <Button variant='outline' size='sm' className='w-full'>
+                      <Users className='h-4 w-4 mr-2' />
+                      Login
+                    </Button>
+                  </Link>
+                  <CartButton />
+                </div>
+              )}
 
-  {isLoggedIn && (
-    <div className='flex space-x-2'>
-      <Link href='/customer-dashboard' className=''>
-        <Button variant='outline' size='sm' className='w-full'>
-          <LayoutDashboard className='h-4 w-4 mr-2' />
-          Dashboard
-        </Button>
-      </Link>
-      <CartButton />
-    </div>
-  )}
-</div>
+              {isLoggedIn && (
+                <div className='flex space-x-2'>
+                  <Link href='/customer-dashboard' className=''>
+                    <Button variant='outline' size='sm' className='w-full'>
+                      <LayoutDashboard className='h-4 w-4 mr-2' />
+                      Dashboard
+                    </Button>
+                  </Link>
+                  <CartButton />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

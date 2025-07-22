@@ -6,12 +6,6 @@ import { prisma } from '@/lib/prisma';
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-
-    // Allow any authenticated user (not just ADMIN)
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
     const data = await request.json();
 
     if (!Array.isArray(data.items) || data.items.length === 0) {
@@ -34,33 +28,39 @@ export async function POST(request: NextRequest) {
     const taxAmount = subtotal * taxRate;
     const total = subtotal + taxAmount;
 
-    const order = await prisma.order.create({
-      data: {
-        orderNumber,
-        customerId: data.customerId ?? undefined,
-        customerName: data.customerName ?? undefined,
-        customerPhone: data.customerPhone ?? undefined,
-        customerEmail: data.customerEmail ?? undefined,
-        customerAddress: data.customerAddress ?? undefined,
-        customerCity: data.customerCity ?? undefined,
-        customerState: data.customerState ?? undefined,
-        customerZip: data.customerZip ?? undefined,
-        subtotal,
-        taxRate,
-        taxAmount,
-        total,
-        paymentMethod: data.paymentMethod ?? 'CARGO',
-        notes: data.notes ?? undefined,
-        userId: session.user.id,
-        orderItems: {
-          create: data.items.map((item: any) => ({
-            productId: item.productId,
-            quantity: item.quantity,
-            price: item.price,
-            total: item.price * item.quantity,
-          })),
-        },
+    const orderData: any = {
+      orderNumber,
+      customerId: data.customerId ?? undefined,
+      customerName: data.customerName ?? undefined,
+      customerPhone: data.customerPhone ?? undefined,
+      customerEmail: data.customerEmail ?? undefined,
+      customerAddress: data.customerAddress ?? undefined,
+      customerCity: data.customerCity ?? undefined,
+      customerState: data.customerState ?? undefined,
+      customerZip: data.customerZip ?? undefined,
+      subtotal,
+      taxRate,
+      taxAmount,
+      total,
+      paymentMethod: data.paymentMethod ?? 'CARGO',
+      notes: data.notes ?? undefined,
+      orderItems: {
+        create: data.items.map((item: any) => ({
+          productId: item.productId,
+          quantity: item.quantity,
+          price: item.price,
+          total: item.price * item.quantity,
+        })),
       },
+    };
+
+    // Only set userId if session exists
+    if (session?.user?.id) {
+      orderData.userId = session.user.id;
+    }
+
+    const order = await prisma.order.create({
+      data: orderData,
       include: {
         orderItems: {
           include: {
@@ -71,6 +71,18 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // Optional: Create notification for the new order
+    await prisma.notification.create({
+      data: {
+        type: 'order',
+        title: 'New Order',
+        message: `Order ${order.orderNumber} placed by ${
+          order.customerName || 'Guest'
+        }`,
+      },
+    });
+
+    // Update product stock quantities
     for (const item of data.items) {
       await prisma.product.update({
         where: { id: item.productId },
