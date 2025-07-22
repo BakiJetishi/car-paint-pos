@@ -109,38 +109,55 @@ export default function NavBar() {
       {isMenuOpen && (
         <div className='md:hidden bg-white border-t border-gray-100'>
           <div className='px-4 py-2 space-y-2'>
-            <a
-              href='#home'
+            <Link
+              href='/'
               className='block py-2 text-gray-700 hover:text-blue-600'
             >
               Home
-            </a>
-            <a
-              href='#shop'
+            </Link>
+            <Link
+              href='/shop'
               className='block py-2 text-gray-700 hover:text-blue-600'
             >
               Shop
-            </a>
-            <a
+            </Link>
+            <Link
               href='#services'
               className='block py-2 text-gray-700 hover:text-blue-600'
             >
               Services
-            </a>
-            <a
+            </Link>
+            <Link
               href='#contact'
               className='block py-2 text-gray-700 hover:text-blue-600'
             >
               Contact
-            </a>
-            <div className='flex space-x-2 pt-2'>
-              <Link href='/customer-login'>
-                <Button variant='outline' size='sm' className='flex-1'>
-                  Login
-                </Button>
-              </Link>
-              <CartButton />
-            </div>
+            </Link>
+<div className='flex flex-col space-y-2 pt-2 md:hidden'>
+  {!isLoggedIn && (
+    <div className='flex space-x-2'>
+      <Link href='/customer-login' className='flex-1'>
+        <Button variant='outline' size='sm' className='w-full'>
+          <Users className='h-4 w-4 mr-2' />
+          Login
+        </Button>
+      </Link>
+      <CartButton />
+    </div>
+  )}
+
+  {isLoggedIn && (
+    <div className='flex space-x-2'>
+      <Link href='/customer-dashboard' className=''>
+        <Button variant='outline' size='sm' className='w-full'>
+          <LayoutDashboard className='h-4 w-4 mr-2' />
+          Dashboard
+        </Button>
+      </Link>
+      <CartButton />
+    </div>
+  )}
+</div>
           </div>
         </div>
       )}

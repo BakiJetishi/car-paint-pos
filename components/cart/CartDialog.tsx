@@ -170,7 +170,7 @@ export function CartDialog() {
             </DialogDescription>
           </DialogHeader>
 
-          <div className='max-h-96 overflow-y-auto'>
+          <div className='max-h-[calc(100vh-200px)] overflow-y-auto'>
             {items.length === 0 ? (
               <div className='text-center py-8 text-gray-500'>
                 <ShoppingCart className='h-12 w-12 mx-auto mb-2 opacity-50' />
@@ -181,7 +181,7 @@ export function CartDialog() {
                 {items.map((item) => (
                   <div
                     key={item.id}
-                    className='flex items-center justify-between p-4 border rounded-lg'
+                    className='flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 border rounded-lg gap-4'
                   >
                     <div className='flex-1'>
                       <h4 className='font-medium'>{item.name}</h4>
@@ -221,7 +221,7 @@ export function CartDialog() {
                         <Trash2 className='h-4 w-4' />
                       </Button>
                     </div>
-                    <div className='ml-4 font-medium'>
+                    <div className='font-medium ml-auto sm:ml-4'>
                       ${(item.price * item.quantity).toFixed(2)}
                     </div>
                   </div>
@@ -261,195 +261,185 @@ export function CartDialog() {
 
       {/* Order Dialog */}
       <Dialog open={isOrderDialogOpen} onOpenChange={setIsOrderDialogOpen}>
-        <DialogContent className='max-w-2xl'>
-          <DialogHeader>
-            <DialogTitle>Complete Your Order</DialogTitle>
-            <DialogDescription>
-              Fill in your details to complete the purchase
-            </DialogDescription>
-          </DialogHeader>
+  <DialogContent className="w-full max-w-md sm:max-w-2xl p-4 sm:p-6 max-h-[90vh] overflow-y-auto">
+    <DialogHeader>
+      <DialogTitle className="text-lg sm:text-xl">Complete Your Order</DialogTitle>
+      <DialogDescription className="text-sm">
+        Fill in your details to complete the purchase
+      </DialogDescription>
+    </DialogHeader>
 
-          <form onSubmit={handleOrderSubmit} className='space-y-4'>
-            <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-              <div>
-                <Label htmlFor='customerName'>Full Name *</Label>
-                <Input
-                  id='customerName'
-                  readOnly={!!session?.user?.name}
-                  value={session?.user?.name || orderForm.customerName}
-                  onChange={(e) =>
-                    setOrderForm({ ...orderForm, customerName: e.target.value })
-                  }
-                  placeholder={session?.user?.name || 'Enter your full name'}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor='customerPhone'>Phone Number *</Label>
-                <Input
-                  id='customerPhone'
-                  readOnly={!!session?.user?.phone}
-                  value={session?.user?.phone || orderForm.customerPhone}
-                  onChange={(e) =>
-                    setOrderForm({
-                      ...orderForm,
-                      customerPhone: e.target.value,
-                    })
-                  }
-                  placeholder={
-                    session?.user?.phone || 'Enter your phone number'
-                  }
-                  required
-                />
-              </div>
-            </div>
+    <form onSubmit={handleOrderSubmit} className="space-y-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="customerName">Full Name *</Label>
+          <Input
+            id="customerName"
+            readOnly={!!session?.user?.name}
+            value={session?.user?.name || orderForm.customerName}
+            onChange={(e) =>
+              setOrderForm({ ...orderForm, customerName: e.target.value })
+            }
+            placeholder={session?.user?.name || "Enter your full name"}
+            required
+          />
+        </div>
+        <div>
+          <Label htmlFor="customerPhone">Phone Number *</Label>
+          <Input
+            id="customerPhone"
+            readOnly={!!session?.user?.phone}
+            value={session?.user?.phone || orderForm.customerPhone}
+            onChange={(e) =>
+              setOrderForm({ ...orderForm, customerPhone: e.target.value })
+            }
+            placeholder={session?.user?.phone || "Enter your phone number"}
+            required
+          />
+        </div>
+      </div>
 
-            <div>
-              <Label htmlFor='customerEmail'>Email Address *</Label>
-              <Input
-                id='customerEmail'
-                type='email'
-                readOnly={!!session?.user?.email}
-                value={session?.user?.email || orderForm.customerEmail}
-                onChange={(e) =>
-                  setOrderForm({ ...orderForm, customerEmail: e.target.value })
-                }
-                placeholder={session?.user?.email || 'Enter your email address'}
-                required
-              />
-            </div>
+      <div>
+        <Label htmlFor="customerEmail">Email Address *</Label>
+        <Input
+          id="customerEmail"
+          type="email"
+          readOnly={!!session?.user?.email}
+          value={session?.user?.email || orderForm.customerEmail}
+          onChange={(e) =>
+            setOrderForm({ ...orderForm, customerEmail: e.target.value })
+          }
+          placeholder={session?.user?.email || "Enter your email address"}
+          required
+        />
+      </div>
 
-            <div>
-              <Label htmlFor='customerAddress'>Delivery Address *</Label>
-              <Input
-                id='customerAddress'
-                value={orderForm.customerAddress}
-                onChange={(e) =>
-                  setOrderForm({
-                    ...orderForm,
-                    customerAddress: e.target.value,
-                  })
-                }
-                placeholder='Street address'
-                required
-              />
-            </div>
+      <div>
+        <Label htmlFor="customerAddress">Delivery Address *</Label>
+        <Input
+          id="customerAddress"
+          value={orderForm.customerAddress}
+          onChange={(e) =>
+            setOrderForm({ ...orderForm, customerAddress: e.target.value })
+          }
+          placeholder="Street address"
+          required
+        />
+      </div>
 
-            <div className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
-              <div>
-                <Label htmlFor='customerCity'>City *</Label>
-                <Input
-                  id='customerCity'
-                  value={orderForm.customerCity}
-                  onChange={(e) =>
-                    setOrderForm({ ...orderForm, customerCity: e.target.value })
-                  }
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor='customerState'>State *</Label>
-                <Input
-                  id='customerState'
-                  value={orderForm.customerState}
-                  onChange={(e) =>
-                    setOrderForm({
-                      ...orderForm,
-                      customerState: e.target.value,
-                    })
-                  }
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor='customerZip'>ZIP Code *</Label>
-                <Input
-                  id='customerZip'
-                  value={orderForm.customerZip}
-                  onChange={(e) =>
-                    setOrderForm({ ...orderForm, customerZip: e.target.value })
-                  }
-                  required
-                />
-              </div>
-            </div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div>
+          <Label htmlFor="customerCity">City *</Label>
+          <Input
+            id="customerCity"
+            value={orderForm.customerCity}
+            onChange={(e) =>
+              setOrderForm({ ...orderForm, customerCity: e.target.value })
+            }
+            required
+          />
+        </div>
+        <div>
+          <Label htmlFor="customerState">State *</Label>
+          <Input
+            id="customerState"
+            value={orderForm.customerState}
+            onChange={(e) =>
+              setOrderForm({ ...orderForm, customerState: e.target.value })
+            }
+            required
+          />
+        </div>
+        <div>
+          <Label htmlFor="customerZip">ZIP Code *</Label>
+          <Input
+            id="customerZip"
+            value={orderForm.customerZip}
+            onChange={(e) =>
+              setOrderForm({ ...orderForm, customerZip: e.target.value })
+            }
+            required
+          />
+        </div>
+      </div>
 
-            <div>
-              <Label htmlFor='paymentMethod'>Payment Method</Label>
-              <Select
-                value={orderForm.paymentMethod}
-                onValueChange={(value) =>
-                  setOrderForm({ ...orderForm, paymentMethod: value })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='CASH'>Cash</SelectItem>
-                  <SelectItem value='CARGO'>Cargo</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+      <div>
+        <Label htmlFor="paymentMethod">Payment Method</Label>
+        <Select
+          value={orderForm.paymentMethod}
+          onValueChange={(value) =>
+            setOrderForm({ ...orderForm, paymentMethod: value })
+          }
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select payment method" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="CASH">Cash</SelectItem>
+            <SelectItem value="CARGO">Cargo</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
 
-            <div>
-              <Label htmlFor='notes'>Special Instructions (Optional)</Label>
-              <Textarea
-                id='notes'
-                value={orderForm.notes}
-                onChange={(e) =>
-                  setOrderForm({ ...orderForm, notes: e.target.value })
-                }
-                placeholder='Any special instructions...'
-                rows={3}
-              />
-            </div>
+      <div>
+        <Label htmlFor="notes">Special Instructions (Optional)</Label>
+        <Textarea
+          id="notes"
+          value={orderForm.notes}
+          onChange={(e) =>
+            setOrderForm({ ...orderForm, notes: e.target.value })
+          }
+          placeholder="Any special instructions..."
+          rows={3}
+        />
+      </div>
 
-            <div className='bg-blue-50 p-4 rounded-lg'>
-              <h4 className='font-medium mb-2'>Order Summary</h4>
-              <div className='space-y-1 text-sm'>
-                {items.map((item) => (
-                  <div key={item.id} className='flex justify-between'>
-                    <span>
-                      {item.name} x {item.quantity}
-                    </span>
-                    <span>${(item.price * item.quantity).toFixed(2)}</span>
-                  </div>
-                ))}
-                <div className='border-t pt-2 space-y-1'>
-                  <div className='flex justify-between'>
-                    <span>Subtotal:</span>
-                    <span>${subtotal.toFixed(2)}</span>
-                  </div>
-                  <div className='flex justify-between'>
-                    <span>Tax (8%):</span>
-                    <span>${taxAmount.toFixed(2)}</span>
-                  </div>
-                  <div className='border-t pt-1 font-medium flex justify-between'>
-                    <span>Total:</span>
-                    <span>${total.toFixed(2)}</span>
-                  </div>
-                </div>
-              </div>
+      <div className="bg-blue-50 p-4 rounded-lg">
+        <h4 className="font-medium mb-2">Order Summary</h4>
+        <div className="space-y-1 text-sm">
+          {items.map((item) => (
+            <div key={item.id} className="flex justify-between">
+              <span>
+                {item.name} x {item.quantity}
+              </span>
+              <span>${(item.price * item.quantity).toFixed(2)}</span>
             </div>
+          ))}
+          <div className="border-t pt-2 space-y-1">
+            <div className="flex justify-between">
+              <span>Subtotal:</span>
+              <span>${subtotal.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Tax (8%):</span>
+              <span>${taxAmount.toFixed(2)}</span>
+            </div>
+            <div className="border-t pt-1 font-medium flex justify-between">
+              <span>Total:</span>
+              <span>${total.toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-            <div className='flex space-x-2'>
-              <Button
-                type='button'
-                variant='outline'
-                onClick={() => setIsOrderDialogOpen(false)}
-                className='flex-1'
-              >
-                Cancel
-              </Button>
-              <Button type='submit' className='flex-1'>
-                <CreditCard className='h-4 w-4 mr-2' />
-                Place Order
-              </Button>
-            </div>
-          </form>
-        </DialogContent>
-      </Dialog>
+      <div className="flex flex-col sm:flex-row gap-3">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => setIsOrderDialogOpen(false)}
+          className="w-full"
+        >
+          Cancel
+        </Button>
+        <Button type="submit" className="w-full">
+          <CreditCard className="h-4 w-4 mr-2" />
+          Place Order
+        </Button>
+      </div>
+    </form>
+  </DialogContent>
+</Dialog>
+
     </>
   );
 }

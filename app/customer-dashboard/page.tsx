@@ -267,40 +267,42 @@ export default function CustomerDashboardPage() {
     <div className='min-h-screen bg-gray-50'>
       {/* Header */}
       <header className='bg-white shadow-sm border-b'>
-        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
-          <div className='flex items-center justify-between h-16'>
-            <div className='flex items-center space-x-3'>
-              <div className='w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center'>
-                <Paintbrush className='h-6 w-6 text-white' />
-              </div>
-              <div>
-                <h1 className='text-xl font-bold text-gray-900'>
-                  AutoPaint Pro
-                </h1>
-                <p className='text-sm text-gray-600'>
-                  Welcome, {session?.user?.name}
-                </p>
-              </div>
-            </div>
-
-            <div className='flex items-center space-x-4'>
-              <Link href='/'>
-                <Button variant='outline'>
-                  <ShoppingCart className='h-4 w-4 mr-2' />
-                  Continue Shopping
-                </Button>
-              </Link>
-              <Button
-                variant='ghost'
-                onClick={() => signOut({ callbackUrl: '/' })}
-              >
-                <LogOut className='h-4 w-4 mr-2' />
-                Sign Out
-              </Button>
-            </div>
-          </div>
+  <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+    <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between py-4 gap-4 sm:gap-0'>
+      {/* Logo & App Name */}
+      <div className='flex items-center space-x-3'>
+        <div className='w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center'>
+          <Paintbrush className='h-6 w-6 text-white' />
         </div>
-      </header>
+        <div>
+          <h1 className='text-xl font-bold text-gray-900'>AutoPaint Pro</h1>
+          <p className='text-sm text-gray-600'>
+            Welcome, {session?.user?.name}
+          </p>
+        </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className='flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full sm:w-auto'>
+        <Link href='/' className='w-full sm:w-auto'>
+          <Button variant='outline' className='w-full sm:w-auto'>
+            <ShoppingCart className='h-4 w-4 mr-2' />
+            Continue Shopping
+          </Button>
+        </Link>
+        <Button
+          variant='ghost'
+          className='w-full sm:w-auto'
+          onClick={() => signOut({ callbackUrl: '/' })}
+        >
+          <LogOut className='h-4 w-4 mr-2' />
+          Sign Out
+        </Button>
+      </div>
+    </div>
+  </div>
+</header>
+
 
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
         {/* Stats Cards */}

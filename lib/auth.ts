@@ -8,16 +8,18 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import { prisma } from './prisma';
 
-// Define your token type with role and sub
+// Define custom token type
 interface MyToken extends TokenSet {
   sub?: string;
   role?: string;
+  phone?: string | null;
 }
 
-// Extend session user type to include id and role
+// Extend session user type
 interface MySessionUser extends NextAuthUser {
   id: string;
   role: string;
+  phone: string;
 }
 
 export const authOptions: NextAuthOptions = {
@@ -57,6 +59,7 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: user.name,
           role: user.role,
+          phone: user.phone ?? '', // ✅ Add phone to returned user object
         };
       },
     }),
@@ -67,23 +70,26 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = user.role;
+        token.role = (user as any).role;
         token.sub = user.id;
+        token.phone = (user as any).phone ?? null;
       }
       return token;
     },
 
-    async session({
-      session,
-      token,
-    }: {
-      session: Session & { user: MySessionUser };
-      token: MyToken;
-    }) {
-      if (token) {
-        session.user.id = token.sub!; // <-- token.sub should be string
-        session.user.role = token.role ?? 'CUSTOMER'; // <-- token.role should be string
-      }
+    async session({ session, token }) {
+      // Safely cast session.user to include custom fields
+      session.user = {
+        ...session.user,
+        id: token.sub!,
+        role: token.role ?? 'CUSTOMER',
+        phone: token.phone ?? null,
+      } as typeof session.user & {
+        id: string;
+        role: string;
+        phone: string | null;
+      };
+
       return session;
     },
   },

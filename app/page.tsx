@@ -41,6 +41,14 @@ interface Product {
 const heroSlides = [
   {
     id: 1,
+    title: 'Complete Body Shop Solutions',
+    subtitle: 'Everything you need for professional results',
+    image:
+      'https://images.pexels.com/photos/3806289/pexels-photo-3806289.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop',
+    cta: 'Explore All',
+  },
+  {
+    id: 2,
     title: 'Premium Automotive Paints',
     subtitle: 'Professional-grade finishes for perfect results',
     image:
@@ -48,20 +56,12 @@ const heroSlides = [
     cta: 'Shop Paints',
   },
   {
-    id: 2,
+    id: 3,
     title: 'Professional Spray Equipment',
     subtitle: 'High-quality spray guns and accessories',
     image:
       'https://images.pexels.com/photos/3806290/pexels-photo-3806290.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop',
     cta: 'View Equipment',
-  },
-  {
-    id: 3,
-    title: 'Complete Body Shop Solutions',
-    subtitle: 'Everything you need for professional results',
-    image:
-      'https://images.pexels.com/photos/3806289/pexels-photo-3806289.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop',
-    cta: 'Explore All',
   },
 ];
 
@@ -173,6 +173,14 @@ export default function HomePage() {
     });
     setNewsletterEmail('');
   };
+
+  useEffect(() => {
+  const interval = setInterval(() => {
+    setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+  }, 5000); // 5 seconds
+
+  return () => clearInterval(interval); // cleanup on unmount
+}, []);
 
   return (
     <div className='min-h-screen bg-gray-50'>
