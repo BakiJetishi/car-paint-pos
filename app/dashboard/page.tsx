@@ -61,6 +61,7 @@ export default function DashboardPage() {
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('CASH');
+  const [customerDescription, setCustomerDescription] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -182,6 +183,7 @@ export default function DashboardPage() {
         })),
         customerName: customerName || undefined,
         customerPhone: customerPhone || undefined,
+        notes: customerDescription || undefined, // NEW
         taxRate,
         paymentMethod,
       };
@@ -224,6 +226,8 @@ export default function DashboardPage() {
         setCart([]);
         setCustomerName('');
         setCustomerPhone('');
+        setCustomerDescription('');
+
 
         // Refresh products to update stock
         fetchProducts();
@@ -443,8 +447,20 @@ export default function DashboardPage() {
                   placeholder='Enter phone number'
                 />
               </div>
+
+              {/* New description field */}
+              <div>
+                <Label htmlFor='customerDescription'>Description (Optional)</Label>
+                <Input
+                  id='customerDescription'
+                  value={customerDescription}
+                  onChange={(e) => setCustomerDescription(e.target.value)}
+                  placeholder='Additional notes or instructions'
+                />
+              </div>
             </div>
           </div>
+
 
           {/* Cart Items */}
           <div className='flex-1 overflow-y-auto'>

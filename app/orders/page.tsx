@@ -536,6 +536,9 @@ export default function OrdersPage() {
                                         Email: {selectedOrder?.customerEmail}
                                       </p>
                                     )}
+                                    {selectedOrder?.notes && (
+                                      <p>Notes: {selectedOrder.notes}</p>
+                                    )}
                                   </div>
                                   <div>
                                     <h4 className='font-medium mb-2'>
@@ -562,9 +565,6 @@ export default function OrdersPage() {
                                       Zip Code:{' '}
                                       {selectedOrder?.customerZip || 'N/A'}
                                     </p>
-                                    {selectedOrder?.notes && (
-                                      <p>Notes: {selectedOrder.notes}</p>
-                                    )}
                                   </div>
                                 </div>
 
