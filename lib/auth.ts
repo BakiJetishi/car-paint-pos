@@ -69,9 +69,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.role = user.role;
         token.sub = user.id;
-        console.log('JWT user:', user);
       }
-      console.log('JWT token:', token);
       return token;
     },
 

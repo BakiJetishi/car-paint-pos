@@ -7,9 +7,10 @@ export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
-    // if (!session?.user?.id || session.user.role !== 'ADMIN') {
-    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    // }
+    // Allow any authenticated user (not just ADMIN)
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     const data = await request.json();
 
@@ -50,7 +51,7 @@ export async function POST(request: NextRequest) {
         total,
         paymentMethod: data.paymentMethod ?? 'CARGO',
         notes: data.notes ?? undefined,
-        userId: session.user.id, // guaranteed string here
+        userId: session.user.id,
         orderItems: {
           create: data.items.map((item: any) => ({
             productId: item.productId,
@@ -95,7 +96,7 @@ export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user?.id || session.user.role !== 'ADMIN') {
+    if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

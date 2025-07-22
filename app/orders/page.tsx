@@ -118,7 +118,10 @@ export default function OrdersPage() {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch('/api/orders');
+      const response = await fetch('/api/orders', {
+        method: 'GET',
+        credentials: 'include', // this ensures cookies (session) are sent
+      });
       if (response.ok) {
         const data = await response.json();
         setOrders(data);
