@@ -156,7 +156,7 @@ export default function DashboardPage() {
       (sum, item) => sum + item.price * item.quantity,
       0
     );
-    const taxRate = 0.08; // 8% tax
+    const taxRate = 0.00; // 0% tax
     const taxAmount = subtotal * taxRate;
     const total = subtotal + taxAmount;
 

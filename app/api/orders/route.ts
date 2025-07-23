@@ -72,15 +72,16 @@ export async function POST(request: NextRequest) {
     });
 
     // Optional: Create notification for the new order
-    await prisma.notification.create({
-      data: {
-        type: 'order',
-        title: 'New Order',
-        message: `Order ${order.orderNumber} placed by ${
-          order.customerName || 'Guest'
-        }`,
-      },
-    });
+    if (session?.user?.role === 'CUSTOMER') {
+      await prisma.notification.create({
+        data: {
+          userId: session.user.id,
+          title: 'New Order',
+          message: 'Your order has been placed.',
+          type: 'order',
+        },
+      });
+    }
 
     // Update product stock quantities
     for (const item of data.items) {
