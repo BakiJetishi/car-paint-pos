@@ -3,11 +3,11 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export async function POST(
-  req: Request,
-  { params }: { params: { id: string } }
+export async function PUT(
+  request: NextRequest,
+  context: any // <-- loose typing to fix TS error
 ) {
-  const { id } = params;
+  const id = context.params.id;
 
   try {
     await prisma.notification.update({
