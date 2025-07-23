@@ -29,7 +29,9 @@ export default function NavBar() {
               <Paintbrush className='h-6 w-6 text-white' />
             </div>
             <div>
-              <h1 className='text-xl font-bold text-gray-900'>AutoPaint Pro</h1>
+              <h1 className='text-m font-bold text-gray-900 md:text-xl'>
+                AutoPaint
+              </h1>
               <p className='text-xs text-gray-600'>Professional Solutions</p>
             </div>
           </div>
@@ -85,13 +87,15 @@ export default function NavBar() {
               </Link>
             )}
 
-            <CartButton />
+            <CartButton showtext={true} />
           </div>
 
           {/* Mobile menu button */}
-          <div className='md:hidden'>
+          <div className='md:hidden space-x-3'>
+            <CartButton showtext={false} />
+
             <Button
-              variant='ghost'
+              variant='secondary'
               size='sm'
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
@@ -142,7 +146,7 @@ export default function NavBar() {
                       Login
                     </Button>
                   </Link>
-                  <CartButton />
+                  <CartButton showtext={true} />
                 </div>
               )}
 
@@ -154,7 +158,7 @@ export default function NavBar() {
                       Dashboard
                     </Button>
                   </Link>
-                  <CartButton />
+                  <CartButton showtext={true} />
                 </div>
               )}
             </div>
