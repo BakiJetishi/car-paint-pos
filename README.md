@@ -1,3 +1,5 @@
+View Demo: https://carpaint-pos.netlify.app/
+
 🚗 Paint Shop POS — Full-Stack Point of Sale System
 
 This is a modern, full-stack POS (Point of Sale) application built for a car paint shop. It supports product management, customer orders, stock tracking, and messaging features. The app is designed with performance, usability, and clean UI in mind.
