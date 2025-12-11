@@ -22,6 +22,6 @@ This is a modern, full-stack POS (Point of Sale) application built for a car pai
 - Fully responsive and production-ready
 
 ---
-
-> Built with scalability and real-world use in mind. Ideal for small-to-medium shops transitioning from paper to digital inventory and sales systems.
-
+Admin User:
+Email: admin@autopaint.com
+Password: admin123
